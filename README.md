@@ -8,7 +8,7 @@ Three models are built up step by step, each improving on the last:
 |---|-------|-----------|---------------|
 | 1 | Single layer (softmax regression, no hidden layer) | Gradient descent | **90.95%** |
 | 2 | One hidden layer (128 units, ReLU) | Gradient descent | **92.45%** |
-| 3 | One hidden layer (128 units, ReLU) | Gradient descent + momentum (β = 0.9) | **94.77%** |
+| 3 | One hidden layer (128 units, ReLU) | Gradient descent + momentum (β = 0.9), 500 iterations | **94.77%** |
 
 ## Dataset
 
@@ -44,14 +44,17 @@ x (784) → Z1 = W1x + b1 → ReLU → Z2 = W2·A1 + b2 → softmax → ŷ (10)
 
 ### 3. One hidden layer with momentum
 
-Same architecture and hyperparameters as model 2, with a momentum term added to the parameter updates:
+Same architecture as model 2 (128 ReLU units, softmax output), with He initialization and a momentum term added to the parameter updates:
 
 ```
 v = β·v + (1 − β)·grad
 θ = θ − lr·v          (β = 0.9)
 ```
 
-Momentum smooths the updates and accelerates convergence, which accounts for the jump from 92.45% to 94.77% over the same 1000 iterations.
+- **Hyperparameters:** learning rate 0.01, β = 0.9, **500 iterations**, full-batch
+- **Initialization:** He (`randn · sqrt(2 / fan_in)`)
+
+This model reaches 94.77% in half as many iterations as model 2. Note that it also differs from model 2 in initialization and iteration count, so the improvement is not attributable to momentum alone.
 
 ## Results
 
@@ -68,6 +71,7 @@ Each notebook also plots the loss curve over iterations and shows a grid of rand
 | File | Description |
 |------|-------------|
 | `ANN.ipynb` | Single-layer network: training, loss curve, test accuracy, sample predictions |
+| `ANN_momentum.ipynb` | Hidden-layer network with momentum: training, loss/accuracy curves, test accuracy, sample predictions |
 | `ANN_.ipynb` | Earlier version of the single-layer notebook (without per-iteration accuracy tracking) |
 | `ANN.md` | Experiment notes covering all three models, with plots |
 
